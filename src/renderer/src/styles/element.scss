@@ -1,0 +1,136 @@
+@forward 'element-plus/theme-chalk/src/common/var.scss' with (
+  $colors: (
+    'white': #ffffff,
+    'black': #000000,
+    'primary': (
+      'base': #3a81fc
+    ),
+    'success': (
+      'base': #65be31
+    ),
+    'warning': (
+      'base': #f39728
+    ),
+    'danger': (
+      'base': #dc4945
+    ),
+    'error': (
+      'base': #dc4945
+    ),
+    'info': (
+      'base': #909399
+    )
+  )
+);
+
+$header-height: 80px;
+.el-button {
+  font-weight: normal;
+  &--primary {
+    --el-color-primary: #3a81fc;
+    --el-button-active-bg-color: #2e71e4;
+    --el-button-hover-bg-color: #73a6ff;
+    --el-button-disabled-bg-color: #98bcfa;
+    &.is-link:focus {
+      color: var(--el-color-primary);
+    }
+  }
+}
+
+.el-header {
+  --el-header-height: 80px;
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #333;
+  box-shadow: 1px 1px 8px 0px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+}
+.el-aside {
+  height: calc(100vh - $header-height);
+}
+.el-main {
+  --el-main-padding: 0;
+  height: calc(100vh - $header-height);
+  background-color: #f1f2f6;
+}
+
+.el-drawer__footer {
+  border-top: 1px solid #ededed;
+}
+
+.el-menu {
+  border-color: #ededed;
+  .el-menu-item {
+    --el-menu-hover-bg-color: #f5f7fa;
+    margin: 0 16px;
+    border-radius: 4px;
+    &.is-active {
+      background-color: var(--el-color-primary-light-9);
+    }
+    .el-sub-menu.is-active > .el-sub-menu__title {
+      color: var(--el-menu-active-color);
+    }
+  }
+}
+.el-card {
+  &.is-always-shadow {
+    box-shadow: 0 0;
+    border: none;
+  }
+  .el-card__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    overflow: hidden;
+  }
+}
+
+.el-form--inline .el-input {
+  width: var(--el-form-inline-content-width);
+}
+.el-form-item.is-required > .el-form-item__label {
+  &::before {
+    display: none;
+  }
+  &::after {
+    content: '*';
+    color: var(--el-color-danger);
+    margin-left: 4px;
+  }
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+}
+
+.el-table {
+  height: 100%;
+  --el-table-header-text-color: #333333;
+  .el-table__header .el-table__cell {
+    background-color: #f5f7fa !important;
+  }
+}
+
+.el-dropdown {
+  > * {
+    outline: none;
+  }
+}
+
+/* nprogress 适配 element-plus 的主题色 */
+#nprogress {
+  & .bar {
+    background-color: var(--el-color-primary);
+  }
+
+  & .peg {
+    box-shadow: 0 0 10px var(--el-color-primary), 0 0 5px var(--el-color-primary);
+  }
+
+  & .spinner-icon {
+    border-top-color: var(--el-color-primary);
+    border-left-color: var(--el-color-primary);
+  }
+}
