@@ -18,7 +18,9 @@ if (process.contextIsolated) {
       user: {
         findAll: (params: { offset?: number; limit?: number }) =>
           ipcRenderer.invoke('user-find-all', params),
-        findOne: (params: object) => ipcRenderer.invoke('user-find-one', params)
+        findOne: (params: object) => ipcRenderer.invoke('user-find-one', params),
+        create: (params: object) => ipcRenderer.invoke('user-create', params),
+        update: (params: object) => ipcRenderer.invoke('user-update', params)
       }
     })
   } catch (error) {

@@ -3,13 +3,18 @@ import { Table, Model, Column, DataType, IsUUID, Default, AllowNull } from 'sequ
 @Table({
   modelName: 'User',
   tableName: 'users',
-  underscored: true
+  underscored: true,
+  timestamps: true
 })
-export class User extends Model<User> {
-  @IsUUID(4)
+export class User extends Model {
+  @IsUUID('all')
   @Default(DataType.UUIDV4)
   @Column({ primaryKey: true, type: DataType.UUID })
   id: string
+
+  @AllowNull(false)
+  @Column(DataType.STRING)
+  userName: string
 
   @Column(DataType.STRING)
   password: string
@@ -23,4 +28,19 @@ export class User extends Model<User> {
 
   @Column(DataType.STRING)
   remark: string
+
+  @AllowNull(false)
+  @Column(DataType.ENUM('admin', 'user', 'finance'))
+  role: 'admin' | 'user' | 'finance'
+
+  @AllowNull(false)
+  @Default(1)
+  @Column(DataType.ENUM('0', '1'))
+  status: '0' | '1'
+
+  @Column(DataType.DATE)
+  createdAt: Date
+
+  @Column(DataType.DATE)
+  updatedAt: Date
 }

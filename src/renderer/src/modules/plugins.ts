@@ -5,10 +5,8 @@ import pinia from '../stores'
 
 import ElementPlus from 'element-plus'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
-// eslint-disable-next-line import/no-unresolved
 import { zhCn } from 'element-plus/es/locale/index'
 import 'element-plus/dist/index.css'
-// eslint-disable-next-line import/no-unresolved
 import 'virtual:svg-icons-register'
 
 export default (app: App) => {

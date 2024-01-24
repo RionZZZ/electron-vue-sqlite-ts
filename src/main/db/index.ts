@@ -5,8 +5,8 @@ import { User } from './models'
 import { userHandle } from './handlers'
 
 const DB_PATH = app.isPackaged
-  ? join(dirname(app.getPath('exe')), `/db/vegetable.sqlite`)
-  : join(app.getAppPath(), `/db/vegetable_dev.sqlite`)
+  ? join(dirname(app.getPath('exe')), '/db/vegetable.sqlite')
+  : join(app.getAppPath(), '/db/vegetable_dev.sqlite')
 console.log(DB_PATH)
 
 const db = {
@@ -16,7 +16,9 @@ const db = {
 }
 
 db.connect = async () => {
-  if (db.connection) return
+  if (db.connection) {
+    return
+  }
   const sequelize = new Sequelize({
     dialect: 'sqlite',
     storage: DB_PATH,
@@ -46,7 +48,7 @@ db.registerHandlers = () => {
       .then(() => {
         return { state: 'connected' }
       })
-      .catch((error) => {
+      .catch(error => {
         return {
           state: 'error',
           error
