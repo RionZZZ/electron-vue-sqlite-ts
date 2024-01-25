@@ -62,6 +62,7 @@ $header-height: 80px;
 
 .el-menu {
   border-color: #ededed;
+  --el-menu-border-color: transparent;
   .el-menu-item {
     --el-menu-hover-bg-color: #f5f7fa;
     margin: 0 16px;
@@ -126,7 +127,9 @@ input::-webkit-inner-spin-button {
   }
 
   & .peg {
-    box-shadow: 0 0 10px var(--el-color-primary), 0 0 5px var(--el-color-primary);
+    box-shadow:
+      0 0 10px var(--el-color-primary),
+      0 0 5px var(--el-color-primary);
   }
 
   & .spinner-icon {

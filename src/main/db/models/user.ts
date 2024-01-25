@@ -37,10 +37,4 @@ export class User extends Model {
   @Default(1)
   @Column(DataType.ENUM('0', '1'))
   status: '0' | '1'
-
-  @Column(DataType.DATE)
-  createdAt: Date
-
-  @Column(DataType.DATE)
-  updatedAt: Date
 }

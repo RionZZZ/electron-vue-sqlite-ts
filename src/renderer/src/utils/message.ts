@@ -21,5 +21,5 @@ export const message = (
     .then(() => {
       callback && callback()
     })
-    .catch()
+    .catch(() => {})
 }

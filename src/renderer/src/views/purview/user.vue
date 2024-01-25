@@ -4,34 +4,26 @@
     <div class="container-main">
       <el-card class="flex-1 flex-column">
         <div class="mb16 justify-content-end">
-          <el-button type="primary" @click="insertUser">新增</el-button>
+          <el-button type="primary" @click="handleEditOrAdd(HandleType.add)">新增</el-button>
         </div>
-        <el-table :data="queryData">
+        <el-table :data="userList">
           <el-table-column prop="userName" label="姓名" />
           <el-table-column prop="phone" label="手机号码" />
           <el-table-column prop="email" label="邮箱" />
           <el-table-column prop="role" label="角色" />
           <el-table-column prop="remark" label="备注" />
-          <el-table-column label="操作">
+          <el-table-column label="操作" align="center" width="280">
             <template #default="{ row }">
-              <el-popover trigger="click" :show-arrow="false">
-                <template #reference>
-                  <el-button type="primary" link>更多</el-button>
-                </template>
-                <!-- <el-button type="primary" text @click="reset(row)">重置密码</el-button>
-                <el-button type="primary" text @click="handleEditOrAdd(row)">编辑</el-button>
-                <el-button type="danger" text @click="deleteInfo(row)">禁用</el-button> -->
-              </el-popover>
+              <!-- <el-button type="primary" text @click="reset(row)">重置密码</el-button> -->
+              <!-- <el-button type="primary" text @click="handleEditOrAdd(row)">编辑</el-button> -->
+              <el-button type="primary" text @click="updateStatus(row)">{{
+                row.status === '0' ? '启用' : '禁用'
+              }}</el-button>
             </template>
           </el-table-column>
         </el-table>
       </el-card>
-      <!-- <UserDrawer
-        title="add & edit"
-        ref="userDrawer"
-        v-model:visible="handleStatus"
-        @submit="onSubmit"
-      /> -->
+      <UserDialog ref="userDialogRef" v-model:visible="handleStatus" @submit="onSubmit" />
     </div>
   </div>
 </template>
@@ -40,37 +32,38 @@
 <script setup name="BasicUser" lang="ts">
 import { inject, onMounted, ref } from 'vue'
 import { Vegetable } from '@renderer/modules/provide'
-// import UserDrawer from './components/user-drawer.vue'
+import { message } from '@renderer/utils/message'
+import { HandleType } from '@renderer/types'
+import UserDialog from './components/user-dialog.vue'
+import { useLocalCrud } from '@renderer/utils/localCrud'
+import { PartialBy } from '@renderer/types/optional'
 
 const vegetable = inject(Vegetable)
-const queryData = ref<UserType[]>([])
-const queryUser = async () => {
-  vegetable!.user.findAll({ offset: 0, limit: 10 }).then(users => {
-    console.log(users)
-    queryData.value = users
-  })
-}
-const insertUser = async () => {
-  vegetable!.user
-    .create({
-      userName: 'test-name',
-      phone: '13411111111',
-      email: '',
-      remark: 'content',
-      role: 'admin'
-    })
-    .then(res => console.log(res))
-}
+const userDialogRef = ref()
 
 onMounted(() => {
-  queryUser()
+  queryAll()
 })
 
-// const userDrawer = ref()
+const {
+  queryAll,
+  queryData: userList,
+  handleStatus,
+  handleEditOrAdd,
+  edit,
+  add
+} = useLocalCrud<UserType>(vegetable!.user, { userName: 't-name' }, userDialogRef)
 
-// const onSubmit = (data: PartialBy<UserData, 'userId'>) => {
-// data.userId ? edit(data) : add(data)
-// }
+const updateStatus = (row: UserType) => {
+  const { id, status } = row
+  message(`确认将${row.status === '0' ? '启用' : '禁用'}用户${row.userName}?`, () => {
+    edit({ id, status: status === '1' ? '0' : '1' }, queryAll)
+  })
+}
+
+const onSubmit = (data: PartialBy<UserType, 'id'>) => {
+  data.id ? edit(data) : add(data)
+}
 </script>
 <style lang="scss" scoped>
 .reset-title {
@@ -83,3 +76,4 @@ onMounted(() => {
   color: #9c9c9c;
 }
 </style>
+@renderer/utils/localCrud
