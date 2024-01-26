@@ -1,6 +1,6 @@
 type VegetableType = {
   db: { init: () => Promise }
-  user: VegetableCurd<UserType>
+  user: VegetableCurd<UserType> & VegetableUser<UserType>
 }
 
 type VegetableCurd<T> = {
@@ -9,8 +9,9 @@ type VegetableCurd<T> = {
     params: Partial<T> & VegetablePagination
   ) => Promise<VegetablePaginationResponse<T>>
   findOne: (params: Partial<T>) => Promise<T>
-  create: (params: Partial<T>) => Promise<T>
-  update: (params: Partial<T>) => Promise<T>
+  create: (params: Partial<T>) => Promise
+  update: (params: Partial<T>) => Promise
+  destroy: (id: string[]) => Promise
 }
 
 type VegetablePagination = {

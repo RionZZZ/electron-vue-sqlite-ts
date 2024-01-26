@@ -21,7 +21,9 @@ if (process.contextIsolated) {
           ipcRenderer.invoke('user-find-and-count-all', params),
         findOne: (params: object) => ipcRenderer.invoke('user-find-one', params),
         create: (params: object) => ipcRenderer.invoke('user-create', params),
-        update: (params: object) => ipcRenderer.invoke('user-update', params)
+        update: (params: object) => ipcRenderer.invoke('user-update', params),
+        resetPassword: (params: object) => ipcRenderer.invoke('user-reset-password', params),
+        destroy: (id: string[]) => ipcRenderer.invoke('user-destroy', id)
       }
     })
   } catch (error) {

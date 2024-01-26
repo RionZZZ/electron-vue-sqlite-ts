@@ -19,7 +19,7 @@ main.init = () => {
 
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 1024,
+    width: 1400,
     height: 768,
     minWidth: 1024,
     minHeight: 768,

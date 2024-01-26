@@ -10,3 +10,7 @@ type UserType = {
   createdAt?: string
   updateAt?: string
 }
+
+type VegetableUser<T> = {
+  resetPassword: (params: Partial<T>) => Promise
+}

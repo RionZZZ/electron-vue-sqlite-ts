@@ -16,6 +16,7 @@ export class User extends Model {
   @Column(DataType.STRING)
   userName: string
 
+  @AllowNull(false)
   @Column(DataType.STRING)
   password: string
 
