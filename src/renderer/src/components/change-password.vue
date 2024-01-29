@@ -1,15 +1,14 @@
 <template>
-  <el-drawer
-    v-model="changePassword"
+  <el-dialog
+    :model-value="visible"
     title="修改密码"
-    width="30%"
+    width="40%"
     @close="handleClose"
-    size="698"
     :close-on-click-modal="false"
   >
     <el-form
       :model="form"
-      ref="ruleFormRef"
+      ref="formRef"
       :rules="rules"
       class="change-password-form"
       label-position="top"
@@ -35,20 +34,22 @@
     </el-form>
     <template #footer>
       <span class="drawer-footer">
-        <el-button @click="changePassword = false">取消</el-button>
+        <el-button @click="handleClose">取消</el-button>
         <el-button type="primary" @click="confirm(ruleFormRef)" :loading="loading">
           确认
         </el-button>
       </span>
     </template>
-  </el-drawer>
+  </el-dialog>
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, computed } from 'vue'
-// import { storeToRefs } from 'pinia'
+import { reactive, ref } from 'vue'
 import { UserStore } from '@renderer/stores'
 import type { FormInstance, FormRules } from 'element-plus'
+
+defineProps<{ visible: boolean }>()
+const emit = defineEmits(['update:visible'])
 
 interface RuleForm {
   account: string
@@ -64,18 +65,14 @@ const form = reactive<RuleForm>({
   confirmPassword: ''
 })
 const loading = ref(false)
-
-const ruleFormRef = ref<FormInstance>()
+const formRef = ref<FormInstance>()
 
 const validatePass = (rule: any, value: any, callback: any) => {
   if (value === '') {
     callback(new Error('请输入新密码'))
   } else {
     if (form.confirmPassword !== '') {
-      if (!ruleFormRef.value) {
-        return
-      }
-      ruleFormRef.value.validateField('confirmPassword', () => null)
+      formRef.value?.validateField('confirmPassword', () => null)
     }
     callback()
   }
@@ -96,50 +93,19 @@ const rules = reactive<FormRules<RuleForm>>({
   newPassword: { validator: validatePass, trigger: 'blur' },
   confirmPassword: { validator: validatePass2, trigger: 'blur' }
 })
-// const { changeState } = userStore
-// const { password } = storeToRefs(userStore)
-const props = defineProps({
-  changePassword: {
-    type: Boolean
-  }
-})
-const emit = defineEmits(['closeChange'])
-const changePassword = computed({
-  get() {
-    return props.changePassword
-  },
-  set(value) {
-    emit('closeChange', value)
-  }
-})
 
 const handleClose = () => {
-  resetForm(ruleFormRef.value)
+  emit('update:visible', false)
+  formRef.value?.resetFields()
 }
 
-const confirm = async (formEl: FormInstance | undefined) => {
+const confirm = async () => {
   loading.value = true
-  if (!formEl) {
-    return
-  }
-  await formEl.validate((valid, fields) => {
+  await formRef.value?.validate(valid => {
     loading.value = false
     if (valid) {
       handleClose()
     }
   })
 }
-
-const resetForm = (formEl: FormInstance | undefined) => {
-  if (!formEl) {
-    return
-  }
-  formEl.resetFields()
-}
 </script>
-
-<style lang="scss" scoped>
-.change-password-form {
-  margin: 0 120px;
-}
-</style>

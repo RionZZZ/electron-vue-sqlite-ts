@@ -1,8 +1,9 @@
 <template>
-  <div>
-    <el-container>
-      <el-header>
-        <div class="header-title">权限系统</div>
+  <el-container>
+    <el-header>
+      <div class="header-title">权限系统</div>
+      <div class="header-right">
+        <Db />
         <el-dropdown trigger="click">
           <span class="dropdown-user">
             <el-icon class="el-icon--right" size="20">
@@ -15,56 +16,50 @@
           </span>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item @click="router.push('/message/mymessage')">
-                <el-badge is-dot class="">我的信息</el-badge>
-              </el-dropdown-item>
-              <el-dropdown-item @click="changePassword = !changePassword">
-                修改密码
-              </el-dropdown-item>
+              <el-dropdown-item @click="handleChangePassword">修改密码</el-dropdown-item>
               <el-dropdown-item divided @click="logout">退出登录</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
-      </el-header>
-      <el-container>
-        <el-aside width="224px">
-          <el-scrollbar>
-            <el-menu
-              :default-active="activePath"
-              class="el-menu-vertical"
-              router
-              :default-openeds="['basic', 'plan', 'manage', 'board']"
-              background-color="#fff"
-              text-color="#333"
-              active-text-color="#3A81FC"
-            >
-              <el-sub-menu v-for="menu in menuList" :key="menu.key" :index="menu.key">
-                <template #title>
-                  <span>{{ menu.title }}</span>
-                </template>
-                <el-menu-item-group>
-                  <el-menu-item
-                    v-for="subMenu in menu.children"
-                    :key="subMenu.name"
-                    :index="subMenu.path"
-                    >{{ subMenu.meta?.title }}</el-menu-item
-                  >
-                </el-menu-item-group>
-              </el-sub-menu>
-            </el-menu></el-scrollbar
+      </div>
+    </el-header>
+    <el-container>
+      <el-aside width="224px">
+        <el-scrollbar>
+          <el-menu
+            :default-active="activePath"
+            class="el-menu-vertical"
+            router
+            background-color="#fff"
+            text-color="#333"
+            active-text-color="#3A81FC"
           >
-        </el-aside>
-        <el-main>
-          <router-view v-slot="{ Component }">
-            <transition name="el-fade-in-linear" :duration="100" mode="out-in">
-              <component :is="Component" />
-            </transition>
-          </router-view>
-        </el-main>
-      </el-container>
+            <el-sub-menu v-for="menu in menuList" :key="menu.key" :index="menu.key">
+              <template #title>
+                <span>{{ menu.title }}</span>
+              </template>
+              <el-menu-item-group>
+                <el-menu-item
+                  v-for="subMenu in menu.children"
+                  :key="subMenu.name"
+                  :index="subMenu.path"
+                  >{{ subMenu.meta?.title }}</el-menu-item
+                >
+              </el-menu-item-group>
+            </el-sub-menu>
+          </el-menu>
+        </el-scrollbar>
+      </el-aside>
+      <el-main>
+        <router-view v-slot="{ Component }">
+          <transition name="el-fade-in-linear" :duration="100" mode="out-in">
+            <component :is="Component" />
+          </transition>
+        </router-view>
+      </el-main>
     </el-container>
-    <ChangePassword :changePassword="changePassword" @closeChange="closeChange" />
-  </div>
+  </el-container>
+  <ChangePassword v-model:visible="showDialog" />
 </template>
 
 <script setup name="Layout" lang="ts">
@@ -74,23 +69,23 @@ import routes from 'virtual:generated-pages'
 import { type Meta } from '@renderer/types/router'
 import { UserStore } from '@renderer/stores'
 import { storeToRefs } from 'pinia'
-import router from '@renderer/router'
-
+import Db from '@renderer/components/db.vue'
 import ChangePassword from '@renderer/components/change-password.vue'
+
 interface Menu {
   title: string
   key: string
   children: RouteRecordRaw[]
 }
-const changePassword = ref(false)
+const showDialog = ref(false)
 const userStore = UserStore()
 const { userName } = storeToRefs(userStore)
+const { logout } = userStore
+const activePath = ref(useRoute().path)
 
 onBeforeMount(() => {
   settingMenu()
 })
-
-const activePath = ref(useRoute().path)
 
 onBeforeRouteLeave((to, _from, next) => {
   activePath.value = to.path
@@ -118,10 +113,8 @@ const settingMenu = () => {
   menuList.value = topMenu
 }
 
-const { logout } = userStore
-
-const closeChange = (val: boolean) => {
-  changePassword.value = val
+const handleChangePassword = () => {
+  showDialog.value = true
 }
 </script>
 
@@ -131,11 +124,13 @@ const closeChange = (val: boolean) => {
   color: #333;
   font-size: 20px;
   font-weight: 400;
-  z-index: 999;
+}
+.header-right {
+  display: flex;
+  align-items: center;
 }
 .dropdown-user {
   display: flex;
-  align-items: center;
   &-name {
     margin: 0 4px;
     font-size: 14px;

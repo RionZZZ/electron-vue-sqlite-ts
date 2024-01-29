@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import Db from '@renderer/components/db.vue'
+import { useDb } from '@renderer/utils/db'
+import { onMounted } from 'vue'
+
+const { connectDb } = useDb()
+onMounted(connectDb)
 </script>
 
 <template>
   <RouterView />
-  <Db />
 </template>

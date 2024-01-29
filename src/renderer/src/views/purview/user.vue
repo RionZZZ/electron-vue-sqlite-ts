@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="bread-crumb">员工管理</div>
+    <div class="bread-crumb">用户管理</div>
     <div class="container-main">
       <el-card>
         <JCSearchForm :model="form">
@@ -33,16 +33,21 @@
           <el-table-column prop="email" label="邮箱" />
           <el-table-column prop="role" label="角色" />
           <el-table-column prop="remark" label="备注" />
-          <el-table-column label="操作" align="center" width="280">
+          <el-table-column label="操作" align="center">
             <template #default="{ row }">
-              <el-button type="primary" text @click="handleEditOrAdd(HandleType.edit, row)"
-                >编辑</el-button
-              >
-              <el-button type="primary" text @click="resetPassword(row)">重置密码</el-button>
-              <el-button type="primary" text @click="updateStatus(row)">{{
-                row.status === '0' ? '启用' : '禁用'
-              }}</el-button>
-              <el-button type="primary" text @click="handleDelete(row)">删除</el-button>
+              <el-popover trigger="click" :show-arrow="false" popper-class="popper">
+                <template #reference>
+                  <el-button type="primary" link>更多</el-button>
+                </template>
+                <el-button type="primary" text @click="handleEditOrAdd(HandleType.edit, row)"
+                  >编辑</el-button
+                >
+                <el-button type="primary" text @click="resetPassword(row)">重置密码</el-button>
+                <el-button type="primary" text @click="updateStatus(row)">{{
+                  row.status === '0' ? '启用' : '禁用'
+                }}</el-button>
+                <el-button type="primary" text @click="handleDelete(row)">删除</el-button>
+              </el-popover>
             </template>
           </el-table-column>
         </el-table>
@@ -118,3 +123,12 @@ const onSubmit = (data: PartialBy<UserType, 'id'>) => {
   data.id ? edit(data, queryAll) : add(data, queryAll)
 }
 </script>
+
+<style lang="scss" scoped>
+.popper {
+  .el-button {
+    display: block;
+    margin-left: 0;
+  }
+}
+</style>

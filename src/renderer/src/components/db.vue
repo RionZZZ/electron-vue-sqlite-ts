@@ -6,10 +6,18 @@ const { dbState, connectDb } = useDb()
 onMounted(() => {
   setTimeout(() => {
     connectDb()
-  }, 2000)
+  }, 1000)
 })
+
+const type = {
+  connected: 'success',
+  connecting: 'warning',
+  error: 'danger',
+  disconnected: 'danger'
+}
 </script>
 
 <template>
-  <div>dbState-----{{ dbState }}</div>
+  <el-tag :type="type[dbState]" effect="dark" round>sqlite {{ dbState }}</el-tag>
 </template>
+
