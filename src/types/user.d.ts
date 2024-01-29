@@ -13,4 +13,5 @@ type UserType = {
 
 type VegetableUser<T> = {
   resetPassword: (params: Partial<T>) => Promise
+  changePassword: (params: Partial<T> & { oldPassword: string }) => Promise
 }

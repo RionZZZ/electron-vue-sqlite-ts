@@ -23,6 +23,7 @@ if (process.contextIsolated) {
         create: (params: object) => ipcRenderer.invoke('user-create', params),
         update: (params: object) => ipcRenderer.invoke('user-update', params),
         resetPassword: (params: object) => ipcRenderer.invoke('user-reset-password', params),
+        changePassword: (params: object) => ipcRenderer.invoke('user-change-password', params),
         destroy: (id: string[]) => ipcRenderer.invoke('user-destroy', id)
       }
     })

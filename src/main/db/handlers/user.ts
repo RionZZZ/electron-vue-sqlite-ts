@@ -15,8 +15,6 @@ class UserHandle {
       order: [['createdAt', 'DESC']],
       where
     }).then(users => {
-      console.log(users)
-
       if (!users) {
         return []
       }
@@ -66,7 +64,7 @@ class UserHandle {
     const { userName, phone, email, remark, role } = params
     const password = RESET_PASSWORD
     const status = DEFAULT_USER_STATUS
-    return new Promise((response, reject) =>
+    return new Promise(response =>
       User.create({ userName, phone, email, remark, password, role, status }).then(() => {
         response({ msg: '新增用户成功', code: 0 })
       })
@@ -75,10 +73,10 @@ class UserHandle {
 
   private update(event: IpcMainInvokeEvent, params: Attributes<User>) {
     const { id, phone, email, remark, password, status } = params
-    return new Promise((response, reject) =>
+    return new Promise(response =>
       User.findOne({ where: { id } }).then(user => {
         if (!user) {
-          reject('没找到用户信息!')
+          response({ msg: '没找到用户信息!', code: 1001 })
         } else {
           user.update({ phone, email, remark, password, status }).then(() => {
             response({ msg: '修改用户成功', code: 0 })
@@ -91,10 +89,10 @@ class UserHandle {
   private resetPassword(event: IpcMainInvokeEvent, params: Attributes<User>) {
     const { id } = params
     const password = RESET_PASSWORD
-    return new Promise((response, reject) =>
+    return new Promise(response =>
       User.findOne({ where: { id } }).then(user => {
         if (!user) {
-          reject('没找到用户信息!')
+          response({ msg: '没找到用户信息!', code: 1001 })
         } else {
           user.update({ password }).then(() => {
             response({ msg: '重置密码成功', code: 0 })
@@ -104,8 +102,29 @@ class UserHandle {
     )
   }
 
+  private changePassword(event: IpcMainInvokeEvent, params: Attributes<User>) {
+    const { id, oldPassword, password } = params
+    return new Promise(response =>
+      User.findOne({ where: { id } }).then(user => {
+        if (!user) {
+          response({ msg: '没找到用户信息!', code: 1001 })
+        } else {
+          if (oldPassword !== user.password) {
+            response({ msg: '原密码不正确!', code: 1002 })
+          } else if (password === user.password) {
+            response({ msg: '新旧密码一致，无需更改!', code: 1003 })
+          } else {
+            user.update({ password }).then(() => {
+              response({ msg: '修改密码成功!', code: 0 })
+            })
+          }
+        }
+      })
+    )
+  }
+
   private destroy(event: IpcMainInvokeEvent, id: string[]) {
-    return new Promise((response, reject) =>
+    return new Promise(response =>
       User.findAll({
         where: { id }
       }).then(users => {
@@ -121,8 +140,9 @@ class UserHandle {
     ipcMain.handle('user-find-one', this.findOne)
     ipcMain.handle('user-create', this.create)
     ipcMain.handle('user-update', this.update)
-    ipcMain.handle('user-reset-password', this.resetPassword)
-    ipcMain.handle('user-destroy', this.destroy)
+    ipcMain.handle('user-reset-password', this.resetPassword),
+      ipcMain.handle('user-change-password', this.changePassword),
+      ipcMain.handle('user-destroy', this.destroy)
   }
 }
 

@@ -44,9 +44,10 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref } from 'vue'
+import { inject, reactive, ref } from 'vue'
 import { UserStore } from '@renderer/stores'
-import type { FormInstance, FormRules } from 'element-plus'
+import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
+import { Vegetable } from '@renderer/modules/provide'
 
 defineProps<{ visible: boolean }>()
 const emit = defineEmits(['update:visible'])
@@ -66,6 +67,8 @@ const form = reactive<RuleForm>({
 })
 const loading = ref(false)
 const formRef = ref<FormInstance>()
+
+const vegetable = inject(Vegetable)
 
 const validatePass = (rule: any, value: any, callback: any) => {
   if (value === '') {
@@ -104,8 +107,31 @@ const confirm = async () => {
   await formRef.value?.validate(valid => {
     loading.value = false
     if (valid) {
-      handleClose()
+      changePassword()
     }
   })
+}
+
+const changePassword = () => {
+  vegetable!.user
+    ?.changePassword({
+      id: '45b3a2b7-10be-44ab-a01e-89d370e2addf',
+      oldPassword: form.password,
+      password: form.newPassword
+    })
+    .then(res => {
+      if (res.code === 0) {
+        ElMessage({
+          message: res.msg,
+          type: 'success'
+        })
+        handleClose()
+      } else {
+        ElMessage({
+          message: res.msg,
+          type: 'error'
+        })
+      }
+    })
 }
 </script>
