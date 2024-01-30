@@ -34,6 +34,11 @@ const add = (data, callback?: () => void) => {
       query()
       handleStatus.value = false
       addOrEditRef?.value.reset()
+    } else {
+      ElMessage({
+        message: res.msg,
+        type: 'error'
+      })
     }
   })
 }
@@ -48,6 +53,11 @@ const edit = (data, callback?: () => void) => {
       query()
       handleStatus.value = false
       addOrEditRef?.value.reset()
+    } else {
+      ElMessage({
+        message: res.msg,
+        type: 'error'
+      })
     }
   })
 }

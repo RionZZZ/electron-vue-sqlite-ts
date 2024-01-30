@@ -65,8 +65,14 @@ class UserHandle {
     const password = RESET_PASSWORD
     const status = DEFAULT_USER_STATUS
     return new Promise(response =>
-      User.create({ userName, phone, email, remark, password, role, status }).then(() => {
-        response({ msg: '新增用户成功', code: 0 })
+      User.findOne({ where: { userName } }).then(user => {
+        if (!user) {
+          User.create({ userName, phone, email, remark, password, role, status }).then(() => {
+            response({ msg: '新增用户成功', code: 0 })
+          })
+        } else {
+          response({ msg: '用户名已存在，请重新创建!', code: 1004 })
+        }
       })
     )
   }
